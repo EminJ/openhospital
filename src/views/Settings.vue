@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <div class="text-red-500">TheWelcome</div>
+    <div class="text-red-500">Settings</div>
   </main>
 </template>
