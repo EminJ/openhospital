@@ -9,6 +9,7 @@
     const eposta = ref('')
     const sifre = ref('')
     const sifre2 = ref('')
+    const DogumTarihi = ref()
     const cinsiyet = ref(true)
   const register = (()=>{
     const options = {
@@ -22,6 +23,7 @@
         sifre: sifre.value,
         sifre2: sifre2.value,
         cinsiyet: cinsiyet.value,
+        DogumTarihi:DogumTarihi.value
       }
     };
 
@@ -73,6 +75,13 @@
              <span class="text-gray-400">Cinsiyet Girişi</span>
               <p class="flex mx-2 text-gray-500"><input type="radio" checked name="erkek" class="mr-1" @click="cinsiyet=true"> Erkek</p>
               <p class="flex mx-2 text-gray-500"><input type="radio" name="erkek" class="mr-1" @click="cinsiyet=false"> Kadın</p>
+            </div>
+          </div>
+          <div class="w-10/12 h-10 my-2 ml-2 items-center flex flex-nowrap bg-white rounded-md">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <div class="flex items-center w-full h-full ml-1 text-gray-600 pl-2">
+             <span class="text-gray-400">Doğum Tarihi</span>
+             <p class="flex mx-2 text-gray-500"><input type="date" v-model="DogumTarihi" name="DogumTarihi" class="mr-1"></p>
             </div>
           </div>
           <div class="w-10/12 h-10 my-2 items-center flex justify-between">
