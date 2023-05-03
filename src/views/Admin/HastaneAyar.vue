@@ -3,11 +3,19 @@ import { ref } from "vue";
 import axios from 'axios'
 const openmenu = ref(true)
 const Status = ref()
-const Selected = ref('')
-const DoktorPanel = ref(false)
 const Hastane = ref()
 const HastaneId = ref()
 const HesapAdSoyad = ref()
+const categori = ref(['Doktor',
+  ['Dahiliye:489465645', ['Kardiyoloji', 'Endokrinoloji', 'Gastroenteroloji', 'Nefroloji', 'Onkoloji', 'Romatoloji', 'Hematoloji', 'Enfeksiyon hastalıkları']],
+  ['Cerrahi', ['Beyin ve Sinir Cerrahisi', 'Kalp ve Damar Cerrahisi', 'Genel Cerrahi', 'Ortopedi', 'Üroloji', 'Plastik Cerrahi', 'Göğüs Cerrahisi', 'Kulak Burun Boğaz Cerrahisi']],
+  ['Kadın Hastalıkları ve Doğum', ['Jinekoloji', 'Doğumhane', 'Perinatoloji', 'Üreme Endokrinolojisi ve İnfertilite', 'Obstetrik']],
+  ['Çocuk Sağlığı ve Hastalıkları', ['Yenidoğan yoğun bakım ünitesi', 'Pediatrik kardiyoloji', 'Pediatrik nöroloji', 'Pediatrik hematoloji/onkoloji', 'Pediatrik gastroenteroloji', 'Pediatrik nefroloji']],
+  ['Psikiyatri', ['Klinik psikiyatri', 'Çocuk ve ergen psikiyatrisi', 'Ruh sağlığı ve hastalıkları']],
+  ['Göz Hastalıkları', ['Katarakt', 'Glokom', 'Retina hastalıkları', 'Kornea hastalıkları']],
+  ['Dermatoloji', ['Alerjik cilt hastalıkları', 'Sedef hastalığı', 'Akne tedavisi', 'Deri kanseri']],
+  ['Diş Hekimliği', ['Ortodonti', 'Periodontoloji', 'Endodonti', 'Oral cerrahi', 'Pedodonti (çocuk diş hekimliği)']],
+  ['Rehabilitasyon', ['Fizik tedavi ve rehabilitasyon', 'Spor rehabilitasyonu', 'Psikolojik rehabilitasyon']]])
 const cookie = document.cookie.replace(/(?:(?:^|.*;\s*)_accounts\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 const options = {
   method: 'POST',
@@ -33,6 +41,10 @@ axios.request(options).then(function (response) {
     })
   }
 })
+
+const personadd = ((person) => {
+  console.log(person);
+})
 </script>
 
 <template>
@@ -51,20 +63,24 @@ axios.request(options).then(function (response) {
         <a href="/admin">
           <div
             class="my-2 bg-transparent w-full h-11 border-r-2 border-r-transparent flex items-center pl-5 text-blue-400">
-            <span class="material-symbols-outlined mr-2">dashboard</span> Gösterge Paneli</div>
+            <span class="material-symbols-outlined mr-2">dashboard</span> Gösterge Paneli
+          </div>
         </a>
         <a href="/admin/randevu">
-          <div class="my-2 bg-transparent w-full h-11 border-r-2 border-r-transparent flex items-center pl-5 text-blue-400"><span
-              class="material-symbols-outlined mr-2">description</span> Randevu Oluştur</div>
+          <div
+            class="my-2 bg-transparent w-full h-11 border-r-2 border-r-transparent flex items-center pl-5 text-blue-400">
+            <span class="material-symbols-outlined mr-2">description</span> Randevu Oluştur
+          </div>
         </a>
-        <a v-if="Status >= 3 && HastaneId!=0" href="/admin/hastane">
+        <a v-if="Status >= 3 && HastaneId != 0" href="/admin/hastane">
           <div class="my-2 bg-blue-50 w-full h-11 border-r-2 border-r-blue-500 flex items-center pl-5 text-blue-400"><span
               class="material-symbols-outlined mr-2">settings</span> Hastane Ayarları</div>
         </a>
         <a v-if="Status >= 4" href="/admin/HastaneEkle">
           <div
             class="my-2 bg-transparent w-full h-11 border-r-2 border-r-transparent flex items-center pl-5 text-blue-400">
-            <span class="material-symbols-outlined mr-2">local_hospital</span> Hastane Ekle</div>
+            <span class="material-symbols-outlined mr-2">local_hospital</span> Hastane Ekle
+          </div>
         </a>
       </div>
     </Transition>
@@ -82,78 +98,79 @@ axios.request(options).then(function (response) {
           </div>
         </div>
       </div>
-      <div class="w-full h-auto flex justify-around p-5 ">
-        <div class="w-[60rem] h-auto px-3 py-5 shadow-md shadow-gray-300 rounded-md">
-          <h2 class="text-xl text-gray-800 mb-2">Personel Ekle</h2>
-          <div class="flex flex-col items-center">
-            <div class="w-11/12 flex items-center flex-nowrap ">
-              <p class="w-40 mr-4">Personel TC</p>
-              <input type="text"
-                class="w-full my-2 h-10 shadow-md shadow-gray-400 rounded pl-2 focus:outline-none focus:shadow-gray-300"
-                placeholder="Personel TC Giriniz.." autocomplete="false">
-            </div>
-            <div class="w-11/12 flex items-center flex-nowrap ">
-              <p class="w-40 mr-4">Personel Bölüm</p>
-              <div
-                class="w-full my-2 h-auto shadow-md shadow-gray-400 rounded pl-2 focus:outline-none focus:shadow-gray-300">
-                <div v-if="DoktorPanel==false"
-                  class="rounded-sm hover:bg-gray-50 inline-block h-6 shadow px-2 text-sm m-2 shadow-gray-400 cursor-pointer"
-                  style="line-height: 1.6rem;" @click="DoktorPanel=!DoktorPanel">Doktor</div>
-                <div v-else
-                  class="rounded-sm hover:bg-gray-300 bg-gray-200 inline-block h-6 shadow px-2 text-sm m-2 shadow-gray-400 cursor-pointer"
-                  style="line-height: 1.6rem;" @click="DoktorPanel=!DoktorPanel">Doktor</div>
-                <div
-                  class="rounded-sm hover:bg-gray-50 inline-block h-6 shadow px-2 text-sm m-2 shadow-gray-400 cursor-pointer"
-                  style="line-height: 1.6rem;" @click="Selected='Hemşire:1'">Hemşire</div>
-                <div
-                  class="rounded-sm hover:bg-gray-50 inline-block h-6 shadow px-2 text-sm m-2 shadow-gray-400 cursor-pointer"
-                  style="line-height: 1.6rem;" @click="Selected='Danışman:1'">Danışman</div>
-              </div>
-            </div>
-            <div v-if="DoktorPanel" class="w-11/12 flex items-center flex-nowrap ">
-              <p class="w-40 mr-4">Doktor Bölüm</p>
-              <div
-                class="w-full my-2 h-auto shadow-md shadow-gray-400 rounded pl-2 focus:outline-none focus:shadow-gray-300">
-                <div
-                  class="rounded-sm hover:bg-gray-50 inline-block h-6 shadow px-2 text-sm m-2 shadow-gray-400 cursor-pointer"
-                  style="line-height: 1.6rem;" @click="Selected='Psikiyatri:2'">Psikiyatri</div>
-              </div>
-            </div>
-            <div class="w-11/12 my-2 flex items-end justify-end">
-              <h2 class="mr-4 text-sm font-bold" v-if="Selected!=''">Seçim: <span class="text-red-500">{{ Selected }}</span></h2>
-              <input type="button" @click="hastaneolustur" value="Personel Ekle"
-                class="cursor-pointer bg-gray-200 px-4 py-2 rounded hover:bg-green-400 hover:text-white transition-all">
-            </div>
-          </div>
-
+      <div class="w-full h-auto flex p-5 justify-end">
+        <div class="w-[22rem] h-[20rem] mr-5 mt-2 px-3 py-5 shadow-md shadow-gray-300 rounded-md">
+          <h2 class="text-xl text-gray-800 mb-2">Personel Hakkında</h2>
+          <hr>
+          <p class="w-full h-8 flex items-center">Ad: Muhammet Emin</p>
+          <p class="w-full h-8 flex items-center">Soyad: Güleşci</p>
+          <span class="text-xs text-gray-400">burada sağ taraftan tıklanan personelin bilgileri gelecek</span>
         </div>
-
-        <div class="w-[40rem] h-auto px-3 py-5 shadow-md shadow-gray-300 rounded-md">
+        <div class="flex flex-col">
+          <div class="w-[22rem] h-auto mr-5 px-3 py-5 shadow-md shadow-gray-300 rounded-md">
           <h2 class="text-xl text-gray-800 mb-2">Bölüm Ekle</h2>
-          <div>
-            <div class="p-2 shadow my-4 shadow-gray-300 rounded flex flex-col items-center">
-              <h2>Genel Bölüm Ekle</h2>
-                <div class="w-11/12 flex items-center flex-nowrap ">
-                <input type="text"
-                  class="w-full my-4 h-10 shadow-md shadow-gray-400 rounded pl-2 focus:outline-none focus:shadow-gray-300"
-                  placeholder="Genel Bölüm Adı Giriniz.." autocomplete="false">
-              </div>
-              <div class="w-11/12 flex justify-end">
-                <input type="button" value="Bölümü Ekle"
-                  class="cursor-pointer bg-gray-200 px-4 py-2 rounded hover:bg-green-400 hover:text-white transition-all">
-              </div>
-            </div>
-            <div class="p-2 shadow my-4 shadow-gray-300 rounded flex flex-col items-center">
-              <h2>Doktor Bölüm Ekle</h2>
-                <div class="w-11/12 flex items-center flex-nowrap ">
-                <input type="text"
-                  class="w-full my-4 h-10 shadow-md shadow-gray-400 rounded pl-2 focus:outline-none focus:shadow-gray-300"
-                  placeholder="Doktor Bölüm Adı Giriniz.." autocomplete="false">
-              </div>
-              <div class="w-11/12 flex justify-end">
-                <input type="button" value="Bölümü Ekle"
-                  class="cursor-pointer bg-gray-200 px-4 py-2 rounded hover:bg-green-400 hover:text-white transition-all">
-              </div>
+          <hr>
+          <input type="text" name="hastaneyetkili" class="w-full my-2 h-10 shadow-md shadow-gray-400 rounded pl-2 focus:outline-none focus:shadow-gray-300 text-sm" placeholder="Bölüm Adını Giriniz">
+           <div class="flex flex-nowrap justify-between mt-2">
+            <select>
+              <option>Yetki Seçimi</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+            <input type="button" value="Bölümü Oluştur" class="cursor-pointer bg-gray-200 px-4 py-2 text-sm rounded hover:bg-green-400 hover:text-white transition-all">
+           </div>
+          </div>
+          <div class="w-[22rem] h-auto mr-5 mt-2 px-3 py-5 shadow-md shadow-gray-300 rounded-md">
+            <h2 class="text-xl text-gray-800 mb-2">Bölüm Personel Listesi</h2>
+            <hr>
+            <p class="w-full h-8 flex items-center hover:bg-gray-100 transition-all cursor-pointer mt-1 rounded-sm">Muhammet Emin Güleşci</p>
+            <span class="text-xs text-gray-400">axios ile alınan id ile post sonucu gelen response yaz</span>
+          </div>
+        </div>
+        <div class="w-auto h-[90vh] overflow-y-scroll px-3 py-5 shadow-md shadow-gray-300 rounded-md">
+          <h2 class="text-xl text-gray-800 mb-2">Bölüm Listesi</h2>
+          <hr>
+          <div v-for="i in categori">
+            <h2 v-if="typeof i == 'string'"
+              class="text-lg mt-2 w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+              :id="i.split(' ')[0]" @click="personadd(i.split(':')[1])">{{ i.split(':')[0] }}</h2>
+            <div v-if="typeof i == 'object'" v-for="y in i" class="ml-2 text-base">
+              <p v-if="typeof y == 'string'"
+                class="py-4 w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+                :id="y.split(':')[1]" @click="personadd(y.split(':')[1])">{{ y.split(':')[0] }}</p>
+              <hr>
+              <p v-if="typeof y == 'object'" v-for="x in y" class="ml-2 text-sm">
+              <p v-if="typeof x == 'string'"
+                class="w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+                :id="x.split(':')[1]" @click="personadd(x.split(':')[1])">{{ x.split(':')[0] }}</p>
+              <p v-if="typeof x == 'object'" v-for="r in x" class="ml-2 text-xs">
+              <p v-if="typeof r == 'string'"
+                class="w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+                :id="r.split(':')[1]" @click="personadd(r.split(':')[1])">{{ r.split(':')[0] }}</p>
+              <p v-if="typeof r == 'object'" v-for="z in r" class="ml-2">
+              <p v-if="typeof z == 'string'"
+                class="w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+                :id="z.split(':')[1]" @click="personadd(z.split(':')[1])">{{ z.split(':')[0] }}</p>
+              <p v-if="typeof z == 'object'" v-for="u in z" class="ml-2">
+              <p v-if="typeof u == 'string'"
+                class="w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+                :id="u.split(':')[1]" @click="personadd(u.split(':')[1])">{{ u.split(':')[0] }}</p>
+              <p v-if="typeof u == 'object'" v-for="t in u" class="ml-2">
+              <p v-if="typeof t == 'string'"
+                class="w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+                :id="t.split(':')[1]" @click="personadd(t.split(':')[1])">{{ t.split(':')[0] }}</p>
+              <p v-if="typeof t == 'object'" v-for="k in t" class="ml-2">
+              <p v-if="typeof k == 'string'"
+                class="w-64 h-8 flex items-center px-1 transition-all hover:bg-gray-100 rounded-sm cursor-pointer"
+                :id="k.split(':')[1]" @click="personadd(k.split(':')[1])">{{ k.split(':')[0] }}</p>
+              </p>
+              </p>
+              </p>
+              </p>
+              </p>
+              </p>
             </div>
           </div>
         </div>
@@ -208,3 +225,4 @@ axios.request(options).then(function (response) {
     margin-left: 0rem;
   }
 }</style>
+
